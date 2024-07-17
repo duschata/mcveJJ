@@ -6,8 +6,8 @@ plugins {
 }
 
 
-val firstPrepConfig = PrepConfig("nat-code", project.layout.projectDirectory.dir("nat-sources/first"), "")
-val secondPrepConfig = PrepConfig("nat-code", project.layout.projectDirectory.dir("nat-sources/second"), "")
+val firstPrepConfig = PrepConfig("nat-code", project.layout.projectDirectory.dir("nat-sources/first"), "individual configuration for this execute")
+val secondPrepConfig = PrepConfig("nat-code-helper", project.layout.projectDirectory.dir("nat-sources/second"), "individual configuration for this execute")
 
 val prepConfigs = listOf(firstPrepConfig, secondPrepConfig)
 
