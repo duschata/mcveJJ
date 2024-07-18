@@ -31,5 +31,10 @@
       <option name="name" value="publishRepository" />
       <option name="url" value="https://sro-artifactory.intern.gipmbh.de/artifactory/janus-mvn-dev" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="central-mvn-release-with-java8" />
+      <option name="name" value="central-mvn-release-with-java8" />
+      <option name="url" value="https://sro-artifactory.intern.gipmbh.de/artifactory/central-mvn-release-with-java8" />
+    </remote-repository>
   </component>
 </project>

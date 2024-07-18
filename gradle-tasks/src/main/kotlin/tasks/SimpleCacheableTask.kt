@@ -1,5 +1,8 @@
 package tasks
 
+import data.PrepConfig
+import data.PrepConfigResource
+import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -19,8 +22,18 @@ abstract class SimpleCacheableTask : DefaultTask() {
     @get:OutputDirectory
     abstract val outDir: DirectoryProperty
 
-    @get:Input
-    abstract val natProjects: ListProperty<PrepConfig>
+//    @get:Input
+//    abstract val natProjects: ListProperty<PrepConfig>
+
+    @get:Nested
+    abstract val natProjectResource : PrepConfigResource
+
+    fun natProjectResource (action: Action<PrepConfigResource>) {
+        action.execute(natProjectResource)
+    }
+
+    @get:Nested
+    abstract val natProjectResources: ListProperty<PrepConfigResource>
 
     init {
         outDir.convention(project.layout.buildDirectory.dir("tmp"))
@@ -28,6 +41,12 @@ abstract class SimpleCacheableTask : DefaultTask() {
 
     @TaskAction
     fun generate(inputs: InputChanges) {
+        natProjectResources.get().forEach{
+            logger.info("############################")
+            logger.info("${it.naturalRepo.get() }, ${it.path.get().asFile.path}, ${it.property.get()}")
+        }
+
+
         if (inputs.isIncremental) {
             println("CHANGED: " + inputs.getFileChanges(sourceFiles))
             inputs.getFileChanges(sourceFiles).forEach {
