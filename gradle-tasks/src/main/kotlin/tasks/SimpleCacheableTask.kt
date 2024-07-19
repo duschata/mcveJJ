@@ -42,8 +42,8 @@ abstract class SimpleCacheableTask : DefaultTask() {
 
     @TaskAction
     fun generate(inputs: InputChanges) {
-        natProjectResources.get().forEach {
-            logger.info("assigned natsource: ${it.naturalRepo.get()}, ${it.path.get().asFile.path}, ${it.property.get()}")
+        incrementalFiles.map {
+            logger.info("assigned natsource: ${it.path}")
         }
 
         if (inputs.isIncremental) {
