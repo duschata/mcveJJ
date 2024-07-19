@@ -34,6 +34,7 @@ abstract class SimpleCacheableTask : DefaultTask() {
         val natProjectResource = objects.newInstance(PrepConfigResource::class.java)
         action.execute(natProjectResource)
         natProjectResources.add(natProjectResource)
+        incrementalFiles.from(natProjectResource.path)
     }
 
     init {
@@ -46,6 +47,7 @@ abstract class SimpleCacheableTask : DefaultTask() {
             logger.info("assigned natsource: ${it.path}")
         }
 
+        outDir.file("output.txt").get().asFile.writeText("")
         if (inputs.isIncremental) {
             println("CHANGED: " + inputs.getFileChanges(incrementalFiles))
             inputs.getFileChanges(incrementalFiles).forEach {

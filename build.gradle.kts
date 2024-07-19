@@ -15,5 +15,7 @@ tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
         path = project.layout.projectDirectory.dir("nat-sources/second")
         property = "individual configuration for this execute"
     }
-    incrementalFiles.from(natProjectResources.get().map { it.path }, layout.projectDirectory.dir("other-source"))
+//    use map instead of get, but actually this construct is not needed here...
+//    incrementalFiles.from(natProjectResources.map { it.map { prepConfigResource -> prepConfigResource.path } }, layout.projectDirectory.dir("other-source"))
+    incrementalFiles.from(layout.projectDirectory.dir("other-source"))
 }
