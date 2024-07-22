@@ -32,7 +32,7 @@ gradlePlugin {
     // Define the plugin
     val greeting by plugins.creating {
         id = "gradle-tasks"
-        implementationClass = "plugin.GradleTasks"
+        implementationClass = "plugin.McveJJPlugin"
     }
 }
 

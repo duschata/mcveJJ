@@ -4,15 +4,21 @@ plugins {
     id("gradle-tasks")
 }
 
+global {
+    natSourcesPath = layout.projectDirectory.dir("nat-sources")
+    natSourcesFirst = "first"
+    natSourcesSecond = "second"
+}
+
 tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
     natProjectResource {
         naturalRepo = "nat-code"
-        path = project.layout.projectDirectory.dir("nat-sources/first")
+        path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesFirst.map { it }) }
         property = "individual configuration for this execute"
     }
     natProjectResource {
         naturalRepo = "nat-code-helper"
-        path = project.layout.projectDirectory.dir("nat-sources/second")
+        path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesSecond.map { it }) }
         property = "individual configuration for this execute"
     }
 //    use map instead of get, but actually this construct is not needed here...
