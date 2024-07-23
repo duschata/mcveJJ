@@ -11,16 +11,21 @@ global {
 }
 
 tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
-    natProjectResource {
-        naturalRepo = "nat-code"
-        path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesFirst.map { it }) }
-        property = "individual configuration for this execute"
+    prepConfig {
+        sth = "global conf"
+        prepOut = layout.buildDirectory.dir("tmp")
+        prepConfigResource {
+            repoName = "first repo"
+            path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesFirst) }
+            additionalProperty = "additional"
+        }
+        prepConfigResource {
+            repoName = "second repo"
+            path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesSecond) }
+            additionalProperty = "additional"
+        }
     }
-    natProjectResource {
-        naturalRepo = "nat-code-helper"
-        path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesSecond.map { it }) }
-        property = "individual configuration for this execute"
-    }
+
 //    use map instead of get, but actually this construct is not needed here...
 //    incrementalFiles.from(natProjectResources.map { it.map { prepConfigResource -> prepConfigResource.path } }, layout.projectDirectory.dir("other-source"))
     incrementalFiles.from(layout.projectDirectory.dir("other-source"))

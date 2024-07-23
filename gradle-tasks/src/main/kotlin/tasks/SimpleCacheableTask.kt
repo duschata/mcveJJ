@@ -1,12 +1,10 @@
 package tasks
 
-import data.PrepConfigResource
+import data.PrepConfig
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.*
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
@@ -23,22 +21,13 @@ abstract class SimpleCacheableTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NAME_ONLY)
     abstract val incrementalFiles: ConfigurableFileCollection
 
-    @get:OutputDirectory
-    abstract val outDir: DirectoryProperty
-
     @get:Nested
-    abstract val natProjectResources: ListProperty<PrepConfigResource>
+    abstract val prepConfig: PrepConfig
 
 
-    fun natProjectResource(action: Action<PrepConfigResource>) {
-        val natProjectResource = objects.newInstance(PrepConfigResource::class.java)
-        action.execute(natProjectResource)
-        natProjectResources.add(natProjectResource)
-        incrementalFiles.from(natProjectResource.path)
-    }
-
-    init {
-        outDir.convention(project.layout.buildDirectory.dir("tmp"))
+    fun prepConfig(action: Action<PrepConfig>) {
+        action.execute(prepConfig)
+        incrementalFiles.from(prepConfig.prepConfigResources.get().map { it.path })
     }
 
     @TaskAction
@@ -47,16 +36,16 @@ abstract class SimpleCacheableTask : DefaultTask() {
             logger.info("assigned natsource: ${it.path}")
         }
 
-        outDir.file("output.txt").get().asFile.writeText("")
+       prepConfig.prepOut.file("output.txt").get().asFile.writeText("")
         if (inputs.isIncremental) {
             println("CHANGED: " + inputs.getFileChanges(incrementalFiles))
             inputs.getFileChanges(incrementalFiles).forEach {
-                outDir.file("output.txt").get().asFile.appendText("\nout - " + it.file.name)
+                prepConfig.prepOut.file("output.txt").get().asFile.appendText("\nout - " + it.file.name)
             }
         } else {
             println("FULL")
             incrementalFiles.asFileTree.files.forEach {
-                outDir.file("output.txt").get().asFile.appendText("\nout - " + it.name)
+                prepConfig.prepOut.file("output.txt").get().asFile.appendText("\nout - " + it.name)
             }
         }
     }
