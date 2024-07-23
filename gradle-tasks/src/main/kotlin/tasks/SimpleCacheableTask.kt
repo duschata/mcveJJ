@@ -4,11 +4,9 @@ import data.PrepConfig
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.*
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
-import javax.inject.Inject
 
 @CacheableTask
 abstract class SimpleCacheableTask : DefaultTask() {
@@ -40,7 +38,9 @@ abstract class SimpleCacheableTask : DefaultTask() {
             logger.info("assigned natsource: ${it.path}")
         }
 
-       prepConfig.prepOut.file("output.txt").get().asFile.writeText("")
+        ExistingPrepSourceTask.action(project, prepConfig.prepConfigResources.get()[0].path, prepConfig.prepOut)
+
+        prepConfig.prepOut.file("output.txt").get().asFile.writeText("")
         if (inputs.isIncremental) {
             println("CHANGED: " + inputs.getFileChanges(incrementalFiles))
             inputs.getFileChanges(incrementalFiles).forEach {
