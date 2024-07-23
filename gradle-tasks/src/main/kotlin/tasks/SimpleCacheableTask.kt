@@ -13,9 +13,6 @@ import javax.inject.Inject
 @CacheableTask
 abstract class SimpleCacheableTask : DefaultTask() {
 
-    @get:Inject
-    protected abstract val objects: ObjectFactory
-
     @get:InputFiles
     @get:Incremental
     @get:PathSensitive(PathSensitivity.NAME_ONLY)
@@ -30,8 +27,15 @@ abstract class SimpleCacheableTask : DefaultTask() {
         incrementalFiles.from(prepConfig.prepConfigResources.get().map { it.path })
     }
 
+    init {
+        prepConfig.sth.convention("sth")
+    }
+
     @TaskAction
     fun generate(inputs: InputChanges) {
+
+        logger.info(prepConfig.toString())
+
         incrementalFiles.map {
             logger.info("assigned natsource: ${it.path}")
         }

@@ -12,7 +12,7 @@ global {
 
 tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
     prepConfig {
-        sth = "global conf"
+//        sth = "global conf"
         prepOut = layout.buildDirectory.dir("tmp")
         prepConfigResource {
             repoName = "first repo"

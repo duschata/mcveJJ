@@ -10,20 +10,28 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.work.Incremental
 
-interface PrepConfigResource {
+abstract class PrepConfigResource {
 
     @get:Input
-    val repoName: Property<String>
+    abstract val repoName: Property<String>
 
     @get:InputDirectory
     @get:Incremental
     @get:PathSensitive(PathSensitivity.NAME_ONLY)
-    val path: DirectoryProperty
+    abstract val path: DirectoryProperty
 
     @get:Optional
     @get:OutputDirectory
-    val bflex: DirectoryProperty
+    abstract val bflex: DirectoryProperty
 
     @get:Input
-    val additionalProperty: Property<String>
+    abstract val additionalProperty: Property<String>
+    override fun toString(): String {
+        return "PrepConfigResource(" +
+                "repoName=${repoName.get()}, " +
+                "path=${path.get()}, " +
+                "bflex=" + if (bflex.isPresent) bflex.get() else " " + ", " +
+                "additionalProperty=${additionalProperty.get()}" +
+                ")"
+    }
 }

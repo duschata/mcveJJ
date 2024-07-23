@@ -7,6 +7,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Nested
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ abstract class PrepConfig {
     @get:Inject
     abstract val objects: ObjectFactory
 
+    @get:Optional
     @get:Input
     abstract val sth: Property<String>
 
@@ -29,5 +31,14 @@ abstract class PrepConfig {
         action.execute(natProjectResource)
         prepConfigResources.add(natProjectResource)
     }
+
+    override fun toString(): String {
+        return "PrepConfig(" +
+                "sth=${sth.get()}, " +
+                "prepOut=${prepOut.get()}, " +
+                "prepConfigResources=${prepConfigResources.get()}" +
+                ")"
+    }
+
 
 }
