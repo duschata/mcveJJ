@@ -1,15 +1,29 @@
 package tasks
 
+import action.PrepSourceAction
 import data.PrepConfig
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.*
+import org.gradle.api.tasks.options.Option
+import org.gradle.work.FileChange
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
+import java.io.File
+import javax.inject.Inject
 
 @CacheableTask
 abstract class SimpleCacheableTask : DefaultTask() {
+
+    @get:Inject
+    protected abstract val objects: ObjectFactory
+
+    @get:Option(option = "excludeTasks", description = "list of tasks to exclude")
+    @get:Input
+    abstract val excludeTasks: ListProperty<String>
 
     @get:InputFiles
     @get:Incremental
@@ -32,23 +46,27 @@ abstract class SimpleCacheableTask : DefaultTask() {
     @TaskAction
     fun generate(inputs: InputChanges) {
 
+        logger.info("excludeTasks: ${excludeTasks.get()}")
+
         logger.info(prepConfig.toString())
 
         incrementalFiles.map {
             logger.info("assigned natsource: ${it.path}")
         }
 
-        ExistingPrepSourceTask.action(project, prepConfig.prepConfigResources.get()[0].path, prepConfig.prepOut)
+        val prepSourceAction = objects.newInstance(PrepSourceAction::class.java)
+
+        prepSourceAction.action(this, prepConfig.prepConfigResources.get()[0].path, prepConfig.prepOut)
 
         prepConfig.prepOut.file("output.txt").get().asFile.writeText("")
         if (inputs.isIncremental) {
             println("CHANGED: " + inputs.getFileChanges(incrementalFiles))
-            inputs.getFileChanges(incrementalFiles).forEach {
+            inputs.getFileChanges(incrementalFiles).forEach { it: FileChange ->
                 prepConfig.prepOut.file("output.txt").get().asFile.appendText("\nout - " + it.file.name)
             }
         } else {
             println("FULL")
-            incrementalFiles.asFileTree.files.forEach {
+            incrementalFiles.asFileTree.files.forEach { it: File ->
                 prepConfig.prepOut.file("output.txt").get().asFile.appendText("\nout - " + it.name)
             }
         }
