@@ -1,4 +1,5 @@
 import tasks.SimpleCacheableTask
+import tasks.ExecuteBulkTask
 
 plugins {
     id("gradle-tasks")
@@ -10,10 +11,33 @@ global {
     natSourcesSecond = "second"
 }
 
+val cocoToolsRuntimeOnly: Configuration by configurations.creating
+
+dependencies{
+    cocoToolsRuntimeOnly("org.apache.commons:commons-lang3:3.17.0")
+}
+
+tasks.register<ExecuteBulkTask>("taskWithList") {
+    executable = File("/home/tom/bin/meeclipse/meeclipse23Plain/eclipse")
+
+    projectPaths = listOf(
+        objects.directoryProperty().value(layout.projectDirectory.dir("nat-sources")),
+        objects.directoryProperty().value(layout.projectDirectory.dir("other-source"))
+    )
+
+    eclipseProject {
+        projectDirectory = layout.projectDirectory.dir("nat-sources")
+    }
+    eclipseProject {
+        projectDirectory = layout.projectDirectory.dir("other-source")
+    }
+}
+
 tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
     prepConfig {
 //        sth = "global conf"
         prepOut = layout.buildDirectory.dir("tmp")
+        configuration.set(cocoToolsRuntimeOnly)
         prepConfigResource {
             repoName = "first repo"
             path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesFirst) }

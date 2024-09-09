@@ -55,7 +55,6 @@ abstract class SimpleCacheableTask : DefaultTask() {
         }
 
         val prepSourceAction = objects.newInstance(PrepSourceAction::class.java)
-
         prepSourceAction.action(this, prepConfig.prepConfigResources.get()[0].path, prepConfig.prepOut)
 
         prepConfig.prepOut.file("output.txt").get().asFile.writeText("")

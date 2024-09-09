@@ -1,6 +1,7 @@
 package data
 
 import org.gradle.api.Action
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -15,6 +16,9 @@ abstract class PrepConfig {
 
     @get:Inject
     abstract val objects: ObjectFactory
+
+    @get: Input
+    abstract val configuration: Property<Configuration>
 
     @get:Optional
     @get:Input
