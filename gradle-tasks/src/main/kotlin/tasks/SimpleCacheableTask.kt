@@ -5,10 +5,12 @@ import data.PrepConfig
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
+import org.gradle.process.ExecOperations
 import org.gradle.work.FileChange
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
@@ -17,6 +19,9 @@ import javax.inject.Inject
 
 @CacheableTask
 abstract class SimpleCacheableTask : DefaultTask() {
+
+    @get:Inject
+    abstract val execOperations: ExecOperations
 
     @get:Inject
     protected abstract val objects: ObjectFactory
@@ -45,6 +50,11 @@ abstract class SimpleCacheableTask : DefaultTask() {
 
     @TaskAction
     fun generate(inputs: InputChanges) {
+
+        execOperations.javaexec {
+            mainClass.set("")
+            classpath = objects.fileCollection().from(prepConfig.configuration.get())
+        }
 
         logger.info("excludeTasks: ${excludeTasks.get()}")
 

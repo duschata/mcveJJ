@@ -1,7 +1,6 @@
 package data
 
 import org.gradle.api.Action
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -10,6 +9,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import java.io.File
 import javax.inject.Inject
 
 abstract class PrepConfig {
@@ -18,7 +18,7 @@ abstract class PrepConfig {
     abstract val objects: ObjectFactory
 
     @get: Input
-    abstract val configuration: Property<Configuration>
+    abstract val configuration: ListProperty<File>
 
     @get:Optional
     @get:Input

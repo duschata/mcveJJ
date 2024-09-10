@@ -5,6 +5,10 @@ plugins {
     id("gradle-tasks")
 }
 
+repositories {
+    mavenCentral()
+}
+
 global {
     natSourcesPath = layout.projectDirectory.dir("nat-sources")
     natSourcesFirst = "first"
@@ -37,7 +41,7 @@ tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
     prepConfig {
 //        sth = "global conf"
         prepOut = layout.buildDirectory.dir("tmp")
-        configuration.set(cocoToolsRuntimeOnly)
+        configuration.set(cocoToolsRuntimeOnly.resolve())
         prepConfigResource {
             repoName = "first repo"
             path = global.natSourcesPath.flatMap { path -> path.dir(global.natSourcesFirst) }
