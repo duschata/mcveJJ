@@ -1,5 +1,7 @@
 import tasks.SimpleCacheableTask
 import tasks.ExecuteBulkTask
+import tasks.TaskWithInput
+import tasks.TaskWithOutput
 
 plugins {
     id("gradle-tasks")
@@ -57,4 +59,12 @@ tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
 //    use map instead of get, but actually this construct is not needed here...
 //    incrementalFiles.from(natProjectResources.map { it.map { prepConfigResource -> prepConfigResource.path } }, layout.projectDirectory.dir("other-source"))
     incrementalFiles.from(layout.projectDirectory.dir("other-source"))
+}
+
+val taskWithOutput = tasks.register<TaskWithOutput>("taskWithOutput") {
+    input.set("trallallalala")
+    output.set(layout.buildDirectory.dir("bla"))
+}
+tasks.register<TaskWithInput> ("taskWithInput") {
+    input.set(taskWithOutput.get().output.get())
 }
