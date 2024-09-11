@@ -1,7 +1,4 @@
-import tasks.SimpleCacheableTask
-import tasks.ExecuteBulkTask
-import tasks.TaskWithInput
-import tasks.TaskWithOutput
+import tasks.*
 
 plugins {
     id("gradle-tasks")
@@ -19,7 +16,7 @@ global {
 
 val cocoToolsRuntimeOnly: Configuration by configurations.creating
 
-dependencies{
+dependencies {
     cocoToolsRuntimeOnly("org.apache.commons:commons-lang3:3.17.0")
 }
 
@@ -65,6 +62,12 @@ val taskWithOutput = tasks.register<TaskWithOutput>("taskWithOutput") {
     input.set("trollollo")
     output.set(layout.buildDirectory.dir("bla"))
 }
-tasks.register<TaskWithInput> ("taskWithInput") {
+tasks.register<TaskWithInput>("taskWithInput") {
     input.set(taskWithOutput.get().output)
+}
+
+tasks.register<TaskWithInputList>("taskWithInputList") {
+    inputList {
+        input.set(taskWithOutput.get().output)
+    }
 }
