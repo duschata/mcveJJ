@@ -3,13 +3,19 @@ package tasks
 import data.InputResource
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.tasks.Nested
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
+import org.gradle.work.Incremental
 import javax.inject.Inject
 
 abstract class TaskWithInputList : DefaultTask() {
+
+    @get:InputFiles
+    @get:Incremental
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract val incrementalFiles: ConfigurableFileCollection
 
     @get:Inject
     abstract val objectFactory: ObjectFactory
@@ -20,6 +26,7 @@ abstract class TaskWithInputList : DefaultTask() {
     fun inputList(action: Action<InputResource>) {
         val inputResource = objectFactory.newInstance(InputResource::class.java)
         action.execute(inputResource)
+        incrementalFiles.from(inputResource.input)
     }
 
     @TaskAction
