@@ -71,3 +71,7 @@ tasks.register<TaskWithInputList>("taskWithInputList") {
         input.set(taskWithOutput.get().output)
     }
 }
+
+tasks.register<TaskWithConfigurableFileCollection>("taskWithConfigurableFileCollection") {
+   inputDirectories.from(taskWithOutput.get().output)
+}
