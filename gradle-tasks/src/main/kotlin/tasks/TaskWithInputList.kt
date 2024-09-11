@@ -18,15 +18,16 @@ abstract class TaskWithInputList : DefaultTask() {
     abstract val incrementalFiles: ConfigurableFileCollection
 
     @get:Inject
-    abstract val objectFactory: ObjectFactory
+    abstract val objects: ObjectFactory
 
     @get:Nested
     abstract val inputList: ListProperty<InputResource>
 
     fun inputList(action: Action<InputResource>) {
-        val inputResource = objectFactory.newInstance(InputResource::class.java)
+        val inputResource = objects.newInstance(InputResource::class.java)
         action.execute(inputResource)
         incrementalFiles.from(inputResource.input)
+        inputList.add(inputResource)
     }
 
     @TaskAction

@@ -59,7 +59,7 @@ tasks.register<SimpleCacheableTask>("simpleCacheableTask") {
 }
 
 val taskWithOutput = tasks.register<TaskWithOutput>("taskWithOutput") {
-    input.set("trollollo")
+    input.set("faselbla")
     output.set(layout.buildDirectory.dir("bla"))
 }
 tasks.register<TaskWithInput>("taskWithInput") {
