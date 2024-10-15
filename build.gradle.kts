@@ -73,13 +73,18 @@ tasks.register<TaskWithInputList>("taskWithInputList") {
 }
 
 tasks.register<TaskWithConfigurableFileCollection>("taskWithConfigurableFileCollection") {
-   inputDirectories.from(taskWithOutput.get().output)
+    inputDirectories.from(taskWithOutput.get().output)
 }
 
-tasks.register<CopyBulkTask>("copyBulkTask") {
+val copyBulkTask = tasks.register<CopyBulkTask>("copyBulkTask") {
     fromFile = "project_tmpl"
     intoFile = ".project"
+    directories = listOf(
+        layout.projectDirectory.dir("other-source/projectA"),
+        layout.projectDirectory.dir("other-source/projectB")
+    )
+}
 
-    directories = listOf(layout.projectDirectory.dir("other-source/projectA"), layout.projectDirectory.dir("other-source/projectB"))
-
+tasks.register<CopyTaskConsumer>("copyTaskConsumer") {
+    projectFiles.set(copyBulkTask.get().outputFiles)
 }
