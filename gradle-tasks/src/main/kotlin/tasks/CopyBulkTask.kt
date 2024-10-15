@@ -28,14 +28,15 @@ abstract class CopyBulkTask : DefaultTask() {
     abstract val directories: ListProperty<Directory>
 
     @get:InputFiles
-    val inputFiles: Provider<List<Provider<Directory>>> = directories.map { list ->
-        list.map { dir -> dir.dir(fromFile) }
+    val inputFiles: Provider<List<Directory>> = directories.map { list ->
+        list.map { dir -> dir.dir(fromFile).get() }
     }
 
     @get:OutputFiles
-    val outputFiles: Provider<List<Provider<Directory>>> = directories.map { list ->
-        list.map { dir -> dir.dir(intoFile) }
+    val outputFiles: Provider<List<Directory>> = directories.map { list ->
+        list.map { dir -> dir.dir(intoFile).get() }
     }
+
 
     @TaskAction
     fun apply() {

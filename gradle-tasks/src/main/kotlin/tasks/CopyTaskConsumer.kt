@@ -10,7 +10,7 @@ import org.gradle.api.tasks.TaskAction
 abstract class CopyTaskConsumer : DefaultTask() {
 
     @get:InputFiles
-    abstract val projectFiles: ListProperty<Provider<Directory>>
+    abstract val projectFiles: ListProperty<Directory>
 
     @TaskAction
     fun appy() {
