@@ -3,6 +3,7 @@ package tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -18,25 +19,29 @@ abstract class CopyBulkTask : DefaultTask() {
     @get:Inject
     abstract val fileSystemOperations: FileSystemOperations
 
-    @get:Input
+    @get:Internal
     abstract val fromFile: Property<String>
 
-    @get:Input
+    @get:Internal
     abstract val intoFile: Property<String>
 
     @get:Internal
     abstract val directories: ListProperty<Directory>
 
     @get:InputFiles
-    val inputFiles: Provider<List<Directory>> = directories.map { list ->
-        list.map { dir -> dir.dir(fromFile).get() }
-    }
+    abstract val inputFiles: ListProperty<RegularFile>
 
     @get:OutputFiles
-    val outputFiles: Provider<List<Directory>> = directories.map { list ->
-        list.map { dir -> dir.dir(intoFile).get() }
-    }
+    abstract val outputFiles:  ListProperty<RegularFile>
 
+    init {
+        inputFiles.convention(directories.map { list ->
+            list.map { dir -> dir.file(fromFile).get() }
+        })
+        outputFiles.convention(directories.map { list ->
+            list.map { dir -> dir.file(intoFile).get() }
+        })
+    }
 
     @TaskAction
     fun apply() {

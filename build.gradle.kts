@@ -86,5 +86,5 @@ val copyBulkTask = tasks.register<CopyBulkTask>("copyBulkTask") {
 }
 
 tasks.register<CopyTaskConsumer>("copyTaskConsumer") {
-    projectFiles.set(copyBulkTask.get().outputFiles)
+    projectFiles.set(copyBulkTask.flatMap { it.outputFiles })
 }
